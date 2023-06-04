@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F3 Module Test</title>
+    <style>
+		*{
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		.white-font{
+			color: white
+		}
+
+		body{
+			width: 100vw;
+			overflow-x: hidden;
+		}
+
+		h6{
+			font-size: 24px;
+		}
+		h5{
+			font-size: 18px;
+		}
+		ul {
+			list-style: none;
+		}
+
+		.info-container {
+			display: flex;
+			flex-direction: column;
+			padding: 30px;
+			gap: 10px;
+			width: 100vw;
+			background-color: black;
+		}
+
+		.image-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			overflow: hidden;
+		}
+		.image-container img {
+			width: 100%;
+			object-fit: cover;
+		}
+
+		.searh-input-container{
+			display: flex;
+			flex-direction: column;
+			padding: 30px;
+			gap: 10px;
+			width: 100vw;
+		}
+
+		.history {
+			display: flex;
+			flex-direction: column;
+			padding: 30px;
+			gap: 10px;
+			width: 100vw;
+		}
+    </style>
+</head>
+
+<body>
+
+    <div class="info-container">
+        <h6 class="date white-font">Picture On</h6>
+        <div class="image-container">
+			<img class="image" src="" alt="">
+		</div>
+        <h5 class="heading white-font">Spiral Galaxy</h5>
+        <p class="description white-font">para</p>
+    </div>
+
+    <div class="searh-input-container">
+        <h6>Search for a Picture of the Day</h6>
+        <div class="searh-input">
+            <label for="dateInput">Select a date</label>
+            <input type="date" id="dateInput" value="" >
+        </div>
+    </div>
+    <div class="history">
+		<h6>Previous Searches</h6>
+		<ul class="history-date">
+	
+		</ul>
+    </div>
+	<script>
+
+		// API url
+		let url = `https://api.nasa.gov/planetary/apod?api_key=LCc8yC3V8qH2zpKDNlqx2G9jEKIw2kwPOhuNCX2a&date=2023-03-30`;
+
+		// Initial API call
+		fetchData(url);
+
+		// getting the Element for making changes
+		const date = document.getElementsByClassName("date")[0]; 
+		const image = document.getElementsByClassName("image")[0];
+		const heading = document.getElementsByClassName("heading")[0];
+		const description = document.getElementsByClassName("description")[0];
+		const historyDate = document.getElementsByClassName("history-date")[0]
+		const dateInput = document.getElementById("dateInput");
+
+		// Set the value of input date to the current date
+		dateInput.value = getCurrentDate();
+		const li = document.createElement("li")
+		const a = document.createElement("a")
+		a.href = url
+		a.textContent = getCurrentDate();
+		li.appendChild(a)
+		historyDate.appendChild(li)
+
+		// onchange Date event and makeing the api call 
+		dateInput.addEventListener('change', (event) => {
+			console.log(dateInput.value)
+			url = `https://api.nasa.gov/planetary/apod?api_key=LCc8yC3V8qH2zpKDNlqx2G9jEKIw2kwPOhuNCX2a&date=${dateInput.value}`
+			fetchData(url);
+
+			const li = document.createElement("li")
+			const a = document.createElement("a")
+			a.href = url
+			a.textContent = dateInput.value;
+			li.appendChild(a)
+			historyDate.appendChild(li)
+		})
+	  
+	  
+		// Get Current Date
+		function getCurrentDate() {
+			const currentDate = new Date();
+			const year = currentDate.getFullYear();
+			const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Ensure two digits
+			const day = String(currentDate.getDate()).padStart(2, '0'); // Ensure two digits
+
+			const formattedDate = `${year}-${month}-${day}`;
+			return formattedDate;
+		}
+
+		// API CALL
+		function fetchData(url) {
+		  fetch(url)
+			.then(response => response.json())
+			.then(data => {
+			  console.log(data);
+			  date.innerText = `Picture On ${data.date}`; 
+			  image.src= data.url
+			  heading.innerText = `${data.title}`
+			  description.innerText = `${data.explanation}`
+			  
+			  console.log(date);
+			})
+			.catch(error => {
+			  console.error('Error:', error);
+			});
+		}
+	  
+	  </script>
+</body>
+
+</html>
+
+<!-- 
+    API URL 
+    https://api.nasa.gov/planetary/apod?api_key=LCc8yC3V8qH2zpKDNlqx2G9jEKIw2kwPOhuNCX2a&date=2023-03-30
+ -->
